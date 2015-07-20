@@ -5,4 +5,4 @@ DROP TABLE Unit;
 DROP TABLE Unit_Group;
 DROP TABLE User_Profile;
 DROP TABLE Password_History;
-DROP TABLE [User1];
+DROP TABLE [User_1_2_3];
