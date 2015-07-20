@@ -1,3 +1,4 @@
+-- Altering a file
 CREATE TABLE [User]
 (
   User_Key INT IDENTITY(1,1),

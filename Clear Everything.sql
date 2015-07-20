@@ -7,3 +7,4 @@ DROP TABLE User_Profile;
 DROP TABLE Password_History;
 DROP TABLE [User];
 -- Reverting changes
+-- another comment added
