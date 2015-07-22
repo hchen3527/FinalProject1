@@ -17,9 +17,13 @@ ADD CONSTRAINT [CK_User_Password_Required] CHECK  (([Password] != N''));
 
 CREATE TABLE Password_History
 (
+  Password_History_Key INT IDENTITY(1,1),
   User_Key INT NOT NULL,
   [Password] VARCHAR(50)
 );
+
+ALTER TABLE Password_History
+ADD CONSTRAINT PK_Password_History PRIMARY KEY (Password_History_Key);
 
 ALTER TABLE [Password_History] WITH CHECK 
 ADD CONSTRAINT [CK_Password_History_Password_Required] CHECK  (([Password] != N''));
