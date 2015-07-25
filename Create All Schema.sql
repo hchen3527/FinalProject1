@@ -47,6 +47,9 @@ CREATE TABLE User_Profile
 );
 
 ALTER TABLE User_Profile
+ADD CONSTRAINT PK_User_Profile PRIMARY KEY (User_Key);
+
+ALTER TABLE User_Profile
 ADD CONSTRAINT FK_User_Profile_User_Key
 FOREIGN KEY (User_Key)
 REFERENCES [User](User_Key);
