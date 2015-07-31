@@ -9,6 +9,9 @@ CREATE TABLE [User]
 ALTER TABLE [User]
 ADD CONSTRAINT PK_User PRIMARY KEY (User_Key);
 
+ALTER TABLE [User]
+ADD CONSTRAINT Unique_User_User_Name UNIQUE ([User_Name]);
+
 ALTER TABLE [User] WITH CHECK 
 ADD CONSTRAINT [CK_User_User_Name_Required] CHECK  (([User_Name] != N''));
 
@@ -69,6 +72,9 @@ CREATE TABLE Unit_Group
 ALTER TABLE Unit_Group
 ADD CONSTRAINT PK_Unit_Group PRIMARY KEY (Unit_Group_Key);
 
+ALTER TABLE Unit_Group
+ADD CONSTRAINT Unique_Unit_Group_Unit_Group_Name UNIQUE (Unit_Group_Name);
+
 CREATE TABLE Unit
 (
   Unit_Key INT IDENTITY(1,1),
@@ -78,6 +84,9 @@ CREATE TABLE Unit
 
 ALTER TABLE [Unit]
 ADD CONSTRAINT PK_Unit PRIMARY KEY (Unit_Key);
+
+ALTER TABLE Unit
+ADD CONSTRAINT Unique_Unit_Unit_Name UNIQUE (Unit_Name);
 
 ALTER TABLE Unit
 ADD CONSTRAINT FK_Unit_Unit_Group_Key
@@ -108,6 +117,7 @@ CREATE TABLE Food
 (
   Food_Key INT IDENTITY(1,1),
   Name VARCHAR(100),
+  Food_Unit_Key INT NOT NULL,
   Calories DECIMAL(19,8) DEFAULT 0,
   Water DECIMAL(19,8) DEFAULT 0,
   Water_Unit_Key INT NOT NULL,
@@ -129,6 +139,11 @@ CREATE TABLE Food
 
 ALTER TABLE Food
 ADD CONSTRAINT PK_Food PRIMARY KEY (Food_Key);
+
+ALTER TABLE Food
+ADD CONSTRAINT FK_Unit_Conversion_Food_Unit_Key
+FOREIGN KEY (Food_Unit_Key)
+REFERENCES Unit(Unit_Key);
 
 ALTER TABLE Food
 ADD CONSTRAINT FK_Unit_Conversion_Water_Unit_Key
