@@ -1,0 +1,6 @@
+C:\Users\hchen\Source\Repos\hchenTest\Portfolio\Portfolio\bin\Portfolio.dll.config
+C:\Users\hchen\Source\Repos\hchenTest\Portfolio\Portfolio\bin\Portfolio.dll
+C:\Users\hchen\Source\Repos\hchenTest\Portfolio\Portfolio\bin\Portfolio.pdb
+C:\Users\hchen\Source\Repos\hchenTest\Portfolio\Portfolio\obj\Debug\Portfolio.csprojResolveAssemblyReference.cache
+C:\Users\hchen\Source\Repos\hchenTest\Portfolio\Portfolio\obj\Debug\Portfolio.dll
+C:\Users\hchen\Source\Repos\hchenTest\Portfolio\Portfolio\obj\Debug\Portfolio.pdb
