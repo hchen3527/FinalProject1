@@ -38,7 +38,7 @@ SELECT
 FROM dbo.Food AS F
 WHERE F.Name LIKE '%' + @Name + '%'
   AND (@MinCalories IS NULL OR ISNULL(F.Calories, 0) >= @MinCalories)
-  AND (@MaxCalories IS NULL OR ISNULL(F.Calories, 0) <= @MinCalories)
+  AND (@MaxCalories IS NULL OR ISNULL(F.Calories, 0) <= @MaxCalories)
   AND (@MinWater IS NULL OR ISNULL(F.Water, 0) >= @MinWater)
   AND (@MaxWater IS NULL OR ISNULL(F.Water, 0) <= @MaxWater)
   AND (@MinProtein IS NULL OR ISNULL(F.Protein, 0) >= @MinProtein)
