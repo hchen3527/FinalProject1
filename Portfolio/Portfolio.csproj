@@ -71,13 +71,17 @@
     <Content Include="CSS\style.css" />
     <Content Include="Images\asc.gif" />
     <Content Include="Images\bg.gif" />
+    <Content Include="Images\button_submit.png" />
+    <Content Include="Images\Delete.PNG" />
     <Content Include="Images\desc.gif" />
     <Content Include="Images\first.png" />
     <Content Include="Images\last.png" />
     <Content Include="Images\next.png" />
     <Content Include="Images\prev.png" />
     <Content Include="Images\search.png" />
+    <Content Include="Images\Update.PNG" />
     <Content Include="NutritionalDisplay.aspx" />
+    <Content Include="NutritionProfileForm.aspx" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
     <Content Include="Scripts\jquery-latest.js" />
     <Content Include="Scripts\jquery.metadata.js" />
@@ -90,6 +94,7 @@
     <Content Include="Scripts\packer.js" />
     <Content Include="Scripts\ParseMaster.js" />
     <Content Include="Scripts\writeFile.js" />
+    <Content Include="UserNutritionProfile.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +108,21 @@
     <Compile Include="Handler\NutritionHandler.ashx.cs">
       <DependentUpon>NutritionHandler.ashx</DependentUpon>
     </Compile>
+    <Compile Include="NutritionProfileForm.aspx.cs">
+      <DependentUpon>NutritionProfileForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NutritionProfileForm.aspx.designer.cs">
+      <DependentUpon>NutritionProfileForm.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserNutritionProfile.aspx.cs">
+      <DependentUpon>UserNutritionProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserNutritionProfile.aspx.designer.cs">
+      <DependentUpon>UserNutritionProfile.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

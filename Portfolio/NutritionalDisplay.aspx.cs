@@ -42,6 +42,10 @@ namespace Portfolio
                         while (reader.Read())
                         {
                             tr = new TableRow();
+                            tr.Attributes.Add("onclick", "SelectFood(this);");
+                            tr.Attributes.Add("foodkey", reader["Food_Key"].ToString());
+                            tr.Attributes.Add("foodunitkey", reader["Food_Unit_Key"].ToString());
+                            tr.Attributes.Add("foodname", reader["Name"].ToString());
                             tr.Cells.Add(new TableCell { Text = reader["Name"].ToString() });
                             tr.Cells.Add(new TableCell { Text = reader["Calories"].ToString(), CssClass = "Number" });
                             tr.Cells.Add(new TableCell { Text = reader["Water"].ToString(), CssClass = "Number" });

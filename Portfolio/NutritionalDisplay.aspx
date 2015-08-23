@@ -12,8 +12,37 @@
             .tablesorterPager({ container: $("#pager"), size: 30});
     });
 
-    function CallHandler() {
+    function SelectFood(food)
+    {
+        var $food = $(food);
+        $("tr").removeClass("Selected");
+        $("td").removeClass("Selected");
+        $food.addClass("Selected");
+        $food.children().each(function (index) {
+            $(this).addClass("Selected");
+        });
+
+        $("#FoodNameDisplay").text($food.attr("foodname"));
+        $("#FoodNameDisplay").attr("foodkey", ($food.attr("foodkey")));
         var filterData = {
+            "Type": "DropDown",
+            "FoodKey": $food.attr("foodkey")
+        };
+
+        $.ajax({
+            url: "Handler/NutritionHandler.ashx",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: filterData,
+            responseType: "json",
+            success: OnComplete,
+            error: PopulateDropdown
+        });
+    }
+
+    function Search() {
+        var filterData = {
+            "Type": "Search",
             "FoodName": $("#FoodName").val(),
             "MinCalories": $("#MinCalories").val(),
             "MaxCalories": $("#MaxCalories").val(),
@@ -42,7 +71,34 @@
             data: filterData,
             responseType: "json",
             success: OnComplete,
-            error: OnFail
+            error: PopulateTable
+        });
+
+        return false;
+    }
+
+    function NutritionProfleAdd() {
+        var val = $("#FoodQuantityDisplay").val()
+        if (val == "" || parseFloat(val) <= 0 || $("#FoodNameDisplay").attr("foodkey") == undefined)
+        {
+            return;
+        }
+
+        var filterData = {
+            "Type": "NutritionProfileAdd",
+            "FoodKey": $("#FoodNameDisplay").attr("foodkey"),
+            "Quantity": $("#FoodQuantityDisplay").val(),
+            "UnitKey": $("#FoodUnitList").val()
+        };
+
+        $.ajax({
+            url: "Handler/NutritionHandler.ashx",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: filterData,
+            responseType: "json",
+            success: OnComplete,
+            error: DisplaySuccess
         });
 
         return false;
@@ -70,11 +126,20 @@
         alert("Hello");
     }
 
-    function OnFail(result) {
+    function PopulateTable(result) {
         $("#tableHolder").html(result.response);
         $("#domainsTable")
             .tablesorter({ widthFixed: true, widgets: ['zebra'] })
-            .tablesorterPager({ container: $("#pager"), size: 30 });
+            .tablesorterPager({ container: $("#pager"), size: $("#pagesizer").val() });
+    }
+
+    function PopulateDropdown(result) {
+        $("#FoodUnitDisplay").html(result.response);
+    }
+
+    function DisplaySuccess(result)
+    {
+        alert(result.response);
     }
 </script>
 <style type="text/css">
@@ -92,16 +157,49 @@
     {
         text-align: right;
     }
+
+    table.tablesorter tbody tr td.Selected
+    {
+        background-color: lightblue;
+    }
 </style>
 <head runat="server">
     <title>Food Nutrition</title>
 </head>
 <body>
-<div id="FilterHolder">
-    <table id="Filter" class="filter" style="margin: auto; border: 3px solid black; background-color: #f6f6e6;">
+<div id="selectedHolder" style="float:left;">
+    <table style="border: 3px solid #8dbdd8; background-color: #CDCDCD;">
         <thead>
             <tr>
-                <th colspan="6" style="border-bottom:2px solid black;">Food</th>
+                <th colspan="2" style="border-bottom:2px solid #8dbdd8;">Food Add</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="FilterLabel">Name:</td>
+                <td id="FoodNameDisplay" class="FilterInput"></td>
+            </tr>
+            <tr>
+                <td class="FilterLabel">Quantity:</td>
+                <td class="FilterInput"><input id="FoodQuantityDisplay" type="text" style="width:100px;" value="" onblur="javascript:CheckIsNum(this);" /></td>
+            </tr>
+            <tr>
+                <td class="FilterLabel">Unit:</td>
+                <td id="FoodUnitDisplay" class="FilterInput"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;" colspan="2">
+                    <img style="height:25px; width:50px;" src="Images/button_submit.png" alt="Submit"  onclick="javascript:NutritionProfleAdd();" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div id="FilterHolder">
+    <table id="Filter" class="filter" style="margin: auto; border: 3px solid #8dbdd8; background-color: #CDCDCD;">
+        <thead>
+            <tr>
+                <th colspan="6" style="border-bottom:2px solid #8dbdd8;">Food</th>
             </tr>
         </thead>
         <tbody>
@@ -116,13 +214,13 @@
                     Calories:
                 </td>
                 <td class="FilterInput">                  
-                    <input id="MinCalories" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxCalories" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinCalories" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxCalories" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
                 <td class="FilterLabel">
                     Water:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinWater" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxWater" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinWater" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxWater" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
             </tr>
             <tr>
@@ -130,19 +228,19 @@
                     Protein:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinProtein" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxProtein" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinProtein" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxProtein" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
                 <td class="FilterLabel">
                     Lipid:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinLipid" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxLipid" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinLipid" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxLipid" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
                 <td class="FilterLabel">
                     Carbohydrate:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinCarbohydrate" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxCarbohydrate" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinCarbohydrate" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxCarbohydrate" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
             </tr>
             <tr>
@@ -150,19 +248,19 @@
                     Fiber:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinFiber" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxFiber" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinFiber" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxFiber" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
                 <td class="FilterLabel">
                     Sugar:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinSugar" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxSugar" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinSugar" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxSugar" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
                 <td class="FilterLabel">
                     Calcium:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinCalcium" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxCalcium" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinCalcium" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxCalcium" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
             </tr>
             <tr>
@@ -170,7 +268,7 @@
                     Iron:
                 </td>
                 <td class="FilterInput">
-                    <input id="MinIron" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxIron" type="number" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
+                    <input id="MinIron" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" /> to <input id="MaxIron" type="text" style="width:50px;" value="" onblur="javascript:CheckIsNum(this);" />
                 </td>
                 <td class="FilterLabel">
 
@@ -182,7 +280,7 @@
 
                 </td>
                 <td class="FilterInput">
-                    <img style="height:25px; width:50px;" src="Images/search.png" alt="Search"  onclick="javascript:CallHandler();" />
+                    <img style="height:25px; width:50px;" src="Images/search.png" alt="Search"  onclick="javascript:Search();" />
                 </td>
             </tr>
         </tbody>
@@ -199,7 +297,7 @@
         <input type="text" class="pagedisplay" readonly="true"/>
         <img src="Images/next.png" class="next"/>
         <img src="Images/last.png" class="last"/>
-        <select class="pagesize">
+        <select id="pagesizer" class="pagesize">
             <option  value="10">10</option>
             <option value="20">20</option>
             <option selected="selected" value="30">30</option>
@@ -208,5 +306,9 @@
         </select>
     </form>
 </div>
+<br />
+<br />
+<br />
+<a href="UserNutritionProfile.aspx">User Nutrition Profile</a>
 </body>
 </html>

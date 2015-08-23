@@ -42,6 +42,7 @@ namespace Portfolio
                         while (reader.Read())
                         {
                             tr = new TableRow();
+                            //tr.Attributes.Add("onclick", "alert('" + reader["Name"].ToString() + "');");
                             tr.Cells.Add(new TableCell { Text = reader["Name"].ToString() });
                             tr.Cells.Add(new TableCell { Text = reader["Calories"].ToString(), CssClass = "Number" });
                             tr.Cells.Add(new TableCell { Text = reader["Water"].ToString(), CssClass = "Number" });
